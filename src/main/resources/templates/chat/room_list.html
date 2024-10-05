@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅방 목록</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/4.3.1/dist/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+    <h3>채팅방 목록</h3>
+
+    <div class="input-group mb-3">
+        <input type="text" id="roomName" class="form-control" placeholder="채팅방 이름 입력">
+        <div class="input-group-append">
+            <button class="btn btn-primary" onclick="createRoom()">채팅방 생성</button>
+        </div>
+    </div>
+
+    <ul class="list-group">
+        <li class="list-group-item" th:each="room : ${rooms}">
+            <a th:href="'/chat/room/' + ${room.roomId}" th:text="${room.name}">채팅방 이름</a>
+        </li>
+    </ul>
+</div>
+
+<script src="/webjars/axios/0.17.1/dist/axios.min.js"></script>
+<script>
+    function createRoom() {
+        const roomName = document.getElementById('roomName').value;
+        if (!roomName) {
+            alert("채팅방 이름을 입력해주세요.");
+            return;
+        }
+        axios.post('/chat/room', { name: roomName })
+            .then(function (response) {
+                alert(response.data.name + " 채팅방이 생성되었습니다.");
+                location.reload();
+            })
+            .catch(function (error) {
+                console.error("채팅방 생성 실패", error);
+                alert("채팅방 생성 실패");
+            });
+    }
+</script>
+</body>
+</html>
